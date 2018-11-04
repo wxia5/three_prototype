@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import 'three/examples/js/controls/OrbitControls'
+require('three/examples/js/controls/OrbitControls')
 export default class XD {
   constructor (domID, option) {
     debugger
@@ -25,7 +25,6 @@ export default class XD {
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.gammaInput = true
     renderer.gammaOutput = true
-    console.log(renderer)
     var ambient = new THREE.AmbientLight(0xffffff, 0.1)
     scene.add(ambient)
     // create the ground plane
@@ -78,10 +77,26 @@ export default class XD {
     // add spotlight for the shadows
     var spotLight = new THREE.SpotLight(0xffffff)
     spotLight.position.set(-40, 60, -10)
+    spotLight.angle = Math.PI / 4
+    spotLight.penumbra = 0.05
+    spotLight.decay = 2
+    spotLight.distance = 200
+
+    spotLight.castShadow = true
+    spotLight.shadow.mapSize.width = 2048
+    spotLight.shadow.mapSize.height = 2048
+    spotLight.shadow.camera.near = 10
+    spotLight.shadow.camera.far = 200
     spotLight.castShadow = true
 
     let lightHelper = new THREE.SpotLightHelper(spotLight)
+
     scene.add(lightHelper)
+
+    let shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera)
+    scene.add(shadowCameraHelper)
+
+    scene.add(new THREE.AxesHelper(10))
     scene.add(spotLight)
     console.log(THREE)
     var controls = new THREE.OrbitControls(camera, renderer.domElement)
